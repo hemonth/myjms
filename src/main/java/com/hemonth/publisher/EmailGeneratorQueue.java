@@ -3,6 +3,7 @@ package com.hemonth.publisher;
 import com.hemonth.domain.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.jms.Session;
@@ -19,7 +20,7 @@ public class EmailGeneratorQueue {
     public EmailGeneratorQueue() {
     }
 
-    /*    @Scheduled(fixedDelay = 5000)*/
+    @Scheduled(fixedDelay = 5000)
     public void generateEmail() {
         Email email = new Email();
         email.setEmailAddress("hemonth@gmail.com");
@@ -27,7 +28,7 @@ public class EmailGeneratorQueue {
         email.setName("Hemonth");
         logger.info("Sending Email:" + email);
         //simple convertandsend
-        /*jmsTemplate.convertAndSend("Emails", email);*/
+        jmsTemplate.convertAndSend("Emails", email);
 
         //using message postProcessor
         /*jmsTemplate.convertAndSend("Emails", email, (message) -> {
@@ -36,12 +37,12 @@ public class EmailGeneratorQueue {
         });*/
 
         // send using message creator
-        jmsTemplate.send("Emails", (Session session) ->{
+/*        jmsTemplate.send("Emails", (Session session) ->{
             TextMessage msg = session.createTextMessage();
             msg.setStringProperty("Name","hemonth");
             msg.setText("Bye!!");
             return msg;
-        });
+        });*/
     }
 
 }
